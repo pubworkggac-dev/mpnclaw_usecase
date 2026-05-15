@@ -1,0 +1,64 @@
+mqtt:
+  broker: "tcp://localhost:1883"
+  username: ""
+  password: ""
+  client_id: "iot-bridge-001"
+  clean_session: false
+  keepalive: 60
+  topics:
+    # 九井云物模型 - 属性上报
+    - "/system/+/+/thing/property/post"
+    # 九井云设备功能 - 服务调用(平台→设备)
+    - "/system/+/+/thing/service/+"
+    # 九井云OTA升级 - 升级通知(平台→设备)
+    - "/system/+/+/ota/upgrade"
+    # 九井云OTA升级 - 获取版本信息(设备→平台)
+    - "/system/+/+/ota/get/reply"
+    # 九井云OTA升级 - 升级进度(设备→平台)
+    - "/system/+/+/ota/upgrade/process"
+    # 九井云配置更新 - 配置下发(平台→设备)
+    - "/system/+/+/profile/upgrade"
+    # 九井云配置更新 - 确认回复(设备→平台)
+    - "/system/+/+/profile/get/reply"
+    # 九井云配置更新 - 更新进度(设备→平台)
+    - "/system/+/+/profile/upgrade/process"
+    # 九井云文件获取 - 文件请求(平台→设备)
+    - "/system/+/+/profile/download"
+    # 九井云文件获取 - 文件传输(设备→平台)
+    - "/system/+/+/profile/download/process"
+  qos:
+    property: 1
+    service: 1
+    service_reply: 1
+    ota_upgrade: 1
+    ota_get_reply: 1
+    ota_upgrade_process: 1
+    profile_upgrade: 1
+    profile_get_reply: 1
+    profile_upgrade_process: 1
+    profile_download: 1
+    profile_download_process: 1
+
+influxdb:
+  url: "http://localhost:8086"
+  token: "my-super-token"
+  org: "my-org"
+  database: "iot_data"
+
+http:
+  host: "0.0.0.0"
+  port: 6601
+
+batch:
+  size: 5000
+  flush_interval: 10
+  timeout: 30
+
+logging:
+  level: "INFO"
+  format: "json"
+
+openclaw:
+  webhook_secret: "8dc7f9fecbce0ee32449378ae8cd20bb159ee56cc6048694"
+  # Agent 未显式传 session_key 时的默认值
+  default_session_key: "agent:ueg-superclaw:main"

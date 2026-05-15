@@ -1,0 +1,43 @@
+# MQTT-InfluxDB + nanoMQ Docker 环境
+# 一键启动: docker compose -f docker-compose.nanomq.yml up
+# 停止: docker compose -f docker-compose.nanomq.yml down
+# 首次运行后需初始化: docker exec mqtt-influxdb-influx2 influx setup 语句
+
+services:
+  influxdb2:
+    container_name: mqtt-influxdb-influx2
+    image: ${INFLUXDB_IMAGE:-influxdb:2}
+    ports:
+      - "${INFLUXDB_HTTP_PORT:-8086}:8086"
+    volumes:
+      - influxdb2-data:/var/lib/influxdb2
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nanomq:
+    container_name: mqtt-influxdb-nanomq
+    image: ${NANOMQ_IMAGE:-emqx/nanomq:0.24.13}
+    ports:
+      - "${NANOMQ_TCP_PORT:-1883}:1883"
+      - "${NANOMQ_HTTP_PORT:-8081}:8081"
+      - "${NANOMQ_WS_PORT:-8084}:8084"
+    volumes:
+      - nanomq-data:/etc/nanomq
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/api/v4/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  influxdb2-data:
+    name: mqtt-influxdb-influxdb2-data
+  nanomq-data:
+    name: mqtt-influxdb-nanomq-data
+
+networks:
+  default:
+    name: mqtt-influxdb-network
